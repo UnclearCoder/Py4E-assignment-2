@@ -1,21 +1,22 @@
 # Time function
-def add_time(time, add, days=None):
-    # extract the data and check for errors
-    if days is None:
+def add_time(time, add, day=None):
+    # fix for parrameters: time, add, day
+    if day is None:
         ctx = True
-        days = 'Monday'
+        day = 'Monday'
     else:
         ctx = False
     suffix = None
-    day = ''
-    days = days.capitalize()
+    metric = ''
+    day = day.capitalize()
     week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
-    for day in week:
-        if days == day:
-            days = week.index(day)
-    if type(days) != int:
-        print('Error: invalid day')
+    # Extraction for data and check for errors
+    for i in week:
+        if day == i:
+            day = week.index(i)
+    if type(day) != int:
+        print('Error: invalid metric')
         quit()
     time = time.split()
     if time[1].upper() == 'PM':
@@ -47,6 +48,7 @@ def add_time(time, add, days=None):
             print('Error: please specify a valid time')
             quit()
     add = int(add[0]) * 60 + int(add[1])
+
     # new time
     unit = time + add
     hour = unit // 60
@@ -63,20 +65,21 @@ def add_time(time, add, days=None):
     else:
         suffix1 = 'AM'
     if 2 < suffix <= 4:
-        day = '(Next day)'
-        days = days + 1
+        metric = '(Next metric)'
+        day = day + 1
     if suffix > 4:
         suffix = suffix // 2 - 1
-        day = f'({suffix} days later)'
-        days = days + suffix
-    if days > 6:
-        days = days - 7 * (days // 6)
+        metric = f'({suffix} days later)'
+        day = day + suffix
+    if day > 6:
+        day = day - 7 * (day // 6)
+
     # print the result
     if ctx is True:
-        solution = f'{hour}'.zfill(2) + ':' + f'{minutes}'.zfill(2) + f' {suffix1}' + f' {day}'
+        solution = f'{hour}'.zfill(2) + ':' + f'{minutes}'.zfill(2) + f' {suffix1}' + f' {metric}'
         return solution
     else:
-        solution = f'{hour}'.zfill(2) + ':' + f'{minutes}'.zfill(2) + f' {suffix1}' + f' {week[days]}' + f' {day}'
+        solution = f'{hour}'.zfill(2) + ':' + f'{minutes}'.zfill(2) + f' {suffix1}' + f' {week[day]}' + f' {metric}'
         return solution
 
 
