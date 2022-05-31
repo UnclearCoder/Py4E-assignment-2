@@ -2,6 +2,7 @@
 def add_time(time, add):
     # extract the data and check for errors
     suffix = None
+    day = ''
     time = time.split()
     if time[1].upper() == 'PM':
         suffix = 2
@@ -40,16 +41,22 @@ def add_time(time, add):
     # change from minutes to hour
     if hour > 1:
         suffix = suffix + hour // 12
-        if hour == 0:
-            hour = 12
         hour = hour - (hour // 12) * 12
-
+    if hour == 0:
+        hour = 12
     if suffix % 2 == 0:
-        suffix = 'PM'
+        suffix1 = 'PM'
     else:
-        suffix = 'AM'
-    solution = f'{hour}'.zfill(2) + ':' + f'{minutes}'.zfill(2) + f' {suffix}'
+        suffix1 = 'AM'
+    if 2 < suffix <= 4:
+        day = '(Next day)'
+    if suffix > 4:
+        suffix = suffix // 2 - 1
+        day = f'({suffix} days later)'
+    print(suffix)
+    # print the result
+    solution = f'{hour}'.zfill(2) + ':' + f'{minutes}'.zfill(2) + f' {suffix1}' + f' {day}'
     return solution
 
 
-print(add_time("12:50 pm", '25:30'))
+print(add_time("3:00 PM", "48:10"))
