@@ -1,8 +1,22 @@
 # Time function
-def add_time(time, add):
+def add_time(time, add, days=None):
     # extract the data and check for errors
+    if days is None:
+        ctx = True
+        days = 'Monday'
+    else:
+        ctx = False
     suffix = None
     day = ''
+    days = days.capitalize()
+    week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+    for day in week:
+        if days == day:
+            days = week.index(day)
+    if type(days) != int:
+        print('Error: invalid day')
+        quit()
     time = time.split()
     if time[1].upper() == 'PM':
         suffix = 2
@@ -50,13 +64,20 @@ def add_time(time, add):
         suffix1 = 'AM'
     if 2 < suffix <= 4:
         day = '(Next day)'
+        days = days + 1
     if suffix > 4:
         suffix = suffix // 2 - 1
         day = f'({suffix} days later)'
-    print(suffix)
+        days = days + suffix
+    if days > 6:
+        days = days - 7 * (days // 6)
     # print the result
-    solution = f'{hour}'.zfill(2) + ':' + f'{minutes}'.zfill(2) + f' {suffix1}' + f' {day}'
-    return solution
+    if ctx is True:
+        solution = f'{hour}'.zfill(2) + ':' + f'{minutes}'.zfill(2) + f' {suffix1}' + f' {day}'
+        return solution
+    else:
+        solution = f'{hour}'.zfill(2) + ':' + f'{minutes}'.zfill(2) + f' {suffix1}' + f' {week[days]}' + f' {day}'
+        return solution
 
 
-print(add_time("3:00 PM", "48:10"))
+print(add_time("6:30 PM", "205:12", "Tuesday"))
