@@ -65,10 +65,10 @@ def add_time(time, add, day=None):
     else:
         suffix1 = 'AM'
     if 2 < suffix <= 4:
-        metric = '(Next metric)'
+        metric = '(Next day)'
         day = day + 1
     if suffix > 4:
-        suffix = suffix // 2 - 1
+        suffix = suffix // 2
         metric = f'({suffix} days later)'
         day = day + suffix
     if day > 6:
@@ -79,8 +79,8 @@ def add_time(time, add, day=None):
         solution = f'{hour}'.zfill(2) + ':' + f'{minutes}'.zfill(2) + f' {suffix1}' + f' {metric}'
         return solution
     else:
-        solution = f'{hour}'.zfill(2) + ':' + f'{minutes}'.zfill(2) + f' {suffix1}' + f' {week[day]}' + f' {metric}'
+        solution = f'{hour}'.zfill(2) + ':' + f'{minutes}'.zfill(2) + f' {suffix1},' + f' {week[day]}' + f' {metric}'
         return solution
 
 
-print(add_time("6:30 PM", "205:12", "Tuesday"))
+print(add_time("6:30 PM", "205:12"))
