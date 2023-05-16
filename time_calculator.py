@@ -82,5 +82,5 @@ def add_time(time, add, day=None):
         solution = f'{hour}'.zfill(2) + ':' + f'{minutes}'.zfill(2) + f' {suffix1},' + f' {week[day]}' + f' {metric}'
         return solution
 
-
-print(add_time("6:30 PM", "205:12"))
+if __name__ == '__main__':
+    print(add_time("6:30 PM", "205:12"))
