@@ -1,86 +1,71 @@
 # Time function
 def add_time(time, add, day=None):
-    # fix for parrameters: time, add, day
-    if day is None:
-        ctx = True
-        day = 'Monday'
-    else:
-        ctx = False
-    suffix = None
-    metric = ''
-    day = day.capitalize()
-    week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-
-    # Extraction for data and check for errors
-    for i in week:
-        if day == i:
-            day = week.index(i)
-    if type(day) != int:
-        print('Error: invalid metric')
-        quit()
+    # Split time and add
     time = time.split()
-    if time[1].upper() == 'PM':
-        suffix = 2
-    if time[1].upper() == 'AM':
-        suffix = 1
-    if type(suffix) != int:
-        print('Error: please specify if it\'s "AM" or "PM"')
-        quit()
-
-    # check for valid time and change into int
+    add = add.split(':')
+    term = time[1]
     time = time[0].split(':')
-    for index, value in enumerate(time):
-        try:
-            time[index] = int(value)
-        except ValueError:
-            print('Error: please specify a valid time')
-            quit()
-    # convert hour to minutes
-    time = time[0] * 60 + time[1]
-
-    # convert add time into minutes and check for errors
-    add = add.split()
-    add = add[0].split(':')
-    for index, value in enumerate(add):
-        try:
-            add[index] = int(value)
-        except ValueError:
-            print('Error: please specify a valid time')
-            quit()
-    add = int(add[0]) * 60 + int(add[1])
-
-    # new time
-    unit = time + add
-    hour = unit // 60
-    minutes = unit % 60
-
-    # change from minutes to hour
-    if hour > 1:
-        suffix = suffix + hour // 12
-        hour = hour - (hour // 12) * 12
-    if hour == 0:
-        hour = 12
-    if suffix % 2 == 0:
-        suffix1 = 'PM'
+    days = 0
+    # Convert to 24 hour time
+    if term == 'PM' and time[0] != '12':
+        time[0] = int(time[0]) + 12
+    # Add time  
+    time[0] = int(time[0]) + int(add[0])
+    time[1] = int(time[1]) + int(add[1])
+    # Convert to 12 hour time
+    # check minutes
+    if time[1] >= 60:
+        time[0] = time[0] + 1
+        time[1] = time[1] - 60
+    # check hours and add days
+    if time[0] >= 24:
+        days = time[0] // 24
+        time[0] = time[0] - (24 * days)
+    # add daytime term
+    if time[0] > 12:
+        time[0] = time[0] - 12
+        term = 'PM'
+    elif time[0] == 12:
+        term = 'PM'
+    elif time[0] == 0:
+        time[0] = 12
+        term = 'AM'
     else:
-        suffix1 = 'AM'
-    if 2 < suffix <= 4:
-        metric = '(Next day)'
-        day = day + 1
-    if suffix > 4:
-        suffix = suffix // 2
-        metric = f'({suffix} days later)'
-        day = day + suffix
-    if day > 6:
-        day = day - 7 * (day // 6)
-
-    # print the result
-    if ctx is True:
-        solution = f'{hour}'.zfill(2) + ':' + f'{minutes}'.zfill(2) + f' {suffix1}' + f' {metric}'
-        return solution
+        term = 'AM'
+    
+    # add day of the week
+    if day != None:
+        day = day.lower()
+        week = {'sunday': 0, 'monday': 1, 'tuesday': 2, 'wednesday': 3,'thursday': 4, 'friday': 5, 'saturday': 6}
+        day = week[day]
+        day = day + days
+        if day > 6:
+            day = day - (7 * (day // 7))
+        for key, value in week.items():
+            if value == day:
+                day = key.capitalize()
+                break
     else:
-        solution = f'{hour}'.zfill(2) + ':' + f'{minutes}'.zfill(2) + f' {suffix1},' + f' {week[day]}' + f' {metric}'
-        return solution
+        day = None
+
+    # convert back to string
+    time[0] = str(time[0])
+    time[1] = str(time[1])
+    if len(time[1]) == 1:
+        time[1] = '0' + time[1]
+    new_time = f'{time[0]}:{time[1]} {term}'
+    if day != None:
+        new_time = f'{new_time}, {day}'
+    if days == 1:
+        new_time = f'{new_time} (next day)'
+    elif days > 1:
+        new_time = f'{new_time} ({days} days later)'
+
+    return new_time
 
 if __name__ == '__main__':
-    print(add_time("6:30 PM", "205:12"))
+    actual = add_time("11:59 PM", "24:05", "Wednesday")
+    expected = "12:04 AM, Friday (2 days later)"
+    print(actual)
+    print(expected)
+    print(actual == expected)
